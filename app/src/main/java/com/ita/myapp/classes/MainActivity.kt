@@ -1,9 +1,11 @@
 package com.ita.myapp.classes
 
+import android.graphics.fonts.FontStyle
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,9 +23,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Cyan
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ita.myapp.classes.ui.theme.Myapp2Theme
 
 class MainActivity : ComponentActivity() {
@@ -32,16 +43,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent { //Lo que se imprime en pantalla
 
-            Column(
+            /*Column(
                 modifier= Modifier.fillMaxSize(), //De esa columna ocupa todo el espacio
                 verticalArrangement = Arrangement.Center, //Donde lo quieres alinear de forma vertical
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally //Centrarlo horizontalmente
             ){
-                Text(text = "Simple Text")
-                ModifierExample()
-                ModifierExample2()
-                ModifierExample3()
-            }
+                //Text(text = "Simple Text")
+                //ModifierExample()
+                //ModifierExample2()
+                //ModifierExample3()
+            }*/
 
 
             //layouts
@@ -147,6 +158,46 @@ fun ModifierExample3(){
         Text(text = "Item 4")
         Text(text = "Item 5")
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomText(){
+    Column{
+        Text(//String que está en /res/values/strings.xml
+            stringResource(R.string.hello_world_text),
+            //Color que está en /res/values/colors.xml
+            color =  colorResource(R.color.purple_700),
+            fontSize = 28.sp,
+            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+            fontWeight = FontWeight.ExtraBold
+        )
+        val gradientColors = listOf(Color.Cyan,Color.Blue, Color.Red)
+        Text(stringResource(R.string.hello_world_text),
+            style = TextStyle(brush = Brush.linearGradient(colors = gradientColors))
+        )
+    }
+}
 
 
+
+@Preview(showBackground = true)
+@Composable
+fun Picture(){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+    ){
+
+        //Agregar una imagen
+        Image(
+            modifier= Modifier
+                .fillMaxWidth(),
+            //Imagen importada en res/drawable/sushi.png
+            painter = painterResource(R.drawable.sushi),
+            contentDescription = "Sushi item",
+            contentScale = ContentScale.Crop //Investigar scales
+        )
+    }
 }
