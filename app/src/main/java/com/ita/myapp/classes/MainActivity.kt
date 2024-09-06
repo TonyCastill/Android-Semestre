@@ -43,16 +43,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent { //Lo que se imprime en pantalla
 
-            /*Column(
+            Column(
                 modifier= Modifier.fillMaxSize(), //De esa columna ocupa todo el espacio
                 verticalArrangement = Arrangement.Center, //Donde lo quieres alinear de forma vertical
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally //Centrarlo horizontalmente
             ){
+                CustomText()
+                Picture()
                 //Text(text = "Simple Text")
                 //ModifierExample()
                 //ModifierExample2()
                 //ModifierExample3()
-            }*/
+            }
 
 
             //layouts
