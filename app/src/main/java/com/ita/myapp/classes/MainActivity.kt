@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,16 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Cyan
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ita.myapp.classes.ui.theme.Myapp2Theme
+import kotlin.math.max
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +51,16 @@ class MainActivity : ComponentActivity() {
         setContent { //Lo que se imprime en pantalla
 
             Column(
-                modifier= Modifier.fillMaxSize(), //De esa columna ocupa todo el espacio
+                modifier= Modifier
+                    .fillMaxSize() //De esa columna ocupa todo el espacio
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center, //Donde lo quieres alinear de forma vertical
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally //Centrarlo horizontalmente
             ){
                 CustomText()
                 Picture()
+                Content1()
+                Content2()
                 //Text(text = "Simple Text")
                 //ModifierExample()
                 //ModifierExample2()
@@ -201,5 +212,83 @@ fun Picture(){
             contentDescription = "Sushi item",
             contentScale = ContentScale.Crop //Investigar scales
         )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun Content1(){
+    Card(
+        modifier = Modifier
+            .background(Color.LightGray)
+            .fillMaxWidth()
+            .padding(5.dp)
+    ){//New component
+
+        Row{
+            Image(
+                painter = painterResource(id = R.drawable.sushi),
+                contentDescription = "Sushi item",
+                contentScale = ContentScale.Crop, //Check
+                modifier=Modifier
+                    .fillMaxHeight()
+                    //.height(.dp)
+            )
+            Column{
+                Text(
+                    text = "This is a title",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+                Text(stringResource(id = R.string.text_card),
+                    textAlign = TextAlign.Justify,
+                    lineHeight = 18.sp,
+                    maxLines = 4, //Máximo de líneas
+                    modifier =Modifier
+                        .padding(10.dp))
+
+            }
+
+        }
+    }
+}
+
+
+
+
+@Preview(showBackground = true)
+@Composable
+fun Content2(){
+    Card(
+        modifier = Modifier
+            .background(Color.LightGray)
+            .fillMaxWidth()
+            .padding(5.dp)
+    ){//New component
+        Text(
+            text = "This is a title",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(10.dp)
+        )
+
+            Image(
+                painter = painterResource(id = R.drawable.sushi),
+                contentDescription = "Sushi item",
+                contentScale = ContentScale.Crop, //Check
+                modifier=Modifier
+                    .fillMaxWidth()
+                //.height(.dp)
+            )
+            Text(stringResource(id = R.string.text_card),
+                textAlign = TextAlign.Justify,
+                lineHeight = 18.sp,
+                modifier =Modifier
+                    .padding(10.dp))
+
     }
 }
