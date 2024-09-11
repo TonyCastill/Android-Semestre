@@ -2,6 +2,7 @@ package com.ita.myapp.classes
 
 import android.graphics.fonts.FontStyle
 import android.os.Bundle
+import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,13 +24,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-
-
-
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,16 +47,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.ita.myapp.classes.ui.theme.Myapp2Theme
 import kotlin.math.max
+
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.ita.myapp.classes.ui.screens.HomeScreen
+import com.ita.myapp.classes.ui.screens.HomeScreen
+import com.ita.myapp.classes.ui.screens.MenuScreen
+
+//import androidx.navigation.compose.NavHostController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent { //Lo que se imprime en pantalla
-
-            Column(
+            ComposeMultiScreenApp()
+            /*Column(
                 modifier= Modifier
                     .fillMaxSize() //De esa columna ocupa todo el espacio
                     .verticalScroll(rememberScrollState()),
@@ -102,12 +111,12 @@ class MainActivity : ComponentActivity() {
 //                        modifier = Modifier.padding(innerPadding)
 //                    )
 //
-    }
-//            }*/
+    }*/
+            }*/
         }
     }
 }
-
+/*
 //Cada Composable es un elemento visible
 @Composable //Fragmento o componente de diseño
 fun Greeting(name: String, modifier: Modifier = Modifier) {
@@ -353,4 +362,21 @@ fun BoxExample2(){
         Text(text = "BottomEnd", modifier=Modifier.align((Alignment.BottomEnd)))
 
     }
+}*/
+
+@Composable
+fun ComposeMultiScreenApp(){
+    val navController = rememberNavController()
+    Surface(color=Color.White){
+        SetupNavGraph(navController=navController) //función propia
+    }
+}
+
+@Composable
+fun SetupNavGraph(navController: NavHostController){
+    NavHost(navController = navController, startDestination = "menu"){ //índice de pantallas
+        composable("menu"){ MenuScreen(navController) }
+        composable("home"){ HomeScreen(navController) }
+    }
+
 }
