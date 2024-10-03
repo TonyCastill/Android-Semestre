@@ -64,7 +64,7 @@ import com.ita.myapp.classes.ui.screens.MenuScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Colors also baterry and stuff bar
         setContent { //Lo que se imprime en pantalla
             ComposeMultiScreenApp()
             /*Column(
