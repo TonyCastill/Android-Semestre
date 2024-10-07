@@ -22,10 +22,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -81,6 +87,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -96,6 +103,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import com.ita.myapp.classes.R
+import com.ita.myapp.classes.data.model.MenuModel
 import com.ita.myapp.classes.data.model.PostModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -108,7 +116,24 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Components(navController: NavController) {
-    var component by remember{ mutableStateOf("") } //Can assign a value
+    var menuOptions = arrayOf(
+        MenuModel(1,"Content 1","Content1",Icons.Filled.Home),
+        MenuModel(2,"Content 2","Content2",Icons.Filled.Person),
+        MenuModel(3,"Buttons","Buttons",Icons.Filled.Build),
+        MenuModel(4,"Floating Buttons","FloatingButtons",Icons.Filled.AddCircle),
+        MenuModel(5,"Chips","Chips",Icons.Filled.Info),
+        MenuModel(6,"Progress","Progress",Icons.Filled.Check),
+        MenuModel(7,"Sliders","Sliders",Icons.Filled.Favorite),
+        MenuModel(8,"Switches","Switches",Icons.Filled.Home),
+        MenuModel(9,"Badges","Badges",Icons.Filled.ShoppingCart),
+        MenuModel(10,"TimePickers","TimePickers",Icons.Filled.Notifications),
+        MenuModel(11,"DatePickers","DatePickers",Icons.Filled.DateRange),
+        MenuModel(12,"AlertDialogs","AlertDialogs",Icons.Filled.Warning),
+        MenuModel(13,"SnackBars","SnackBars",Icons.Filled.Settings),
+        MenuModel(14,"Bars","Bars",Icons.Filled.Person),
+    )
+    // In order to support horizontal page view change, remember Saveable
+    var component by rememberSaveable{ mutableStateOf("") } //Can assign a value
     // A reactive component to UI COMPONENTS
     // A global variable that its state can by updated using buttons
 
@@ -123,9 +148,26 @@ fun Components(navController: NavController) {
                     modifier = Modifier
                     .padding(16.dp))
                 HorizontalDivider() // Line
-
+                LazyColumn{
+                    items(menuOptions){
+                        item ->
+                        NavigationDrawerItem(
+                            icon = {Icon(item.icon, contentDescription = null)},
+                            label = { Text(item.title) },
+                            selected = false,
+                            onClick = {
+                                component=item.option
+                                scope.launch {
+                                    drawerState.apply {
+                                        close() // Close drawer or side menu
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
                 //Show content 1
-                NavigationDrawerItem(label = { Text("Content 1") }, //TITLE OF BUTTON //fist item
+                /*NavigationDrawerItem(label = { Text("Content 1") }, //TITLE OF BUTTON //fist item
                     selected = false //is selected?
                     , onClick = {
                         component="Content1"
@@ -147,10 +189,9 @@ fun Components(navController: NavController) {
                             }
                         }
                     }
-                )
-
+                )*/
                 //Buttons
-                NavigationDrawerItem(label = { Text("Buttons") }, //TITLE OF BUTTON //fist item
+                /*NavigationDrawerItem(label = { Text("Buttons") }, //TITLE OF BUTTON //fist item
                     selected = false //is selected?
                     , onClick = {
                         component="Buttons"
@@ -303,7 +344,7 @@ fun Components(navController: NavController) {
                             }
                         }
                     }
-                )
+                )*/
             }
 
          }) {
