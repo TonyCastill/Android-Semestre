@@ -17,6 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -93,6 +97,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Switch
 import androidx.compose.ui.text.font.FontWeight
@@ -105,6 +110,7 @@ import androidx.navigation.NavController
 import com.ita.myapp.classes.R
 import com.ita.myapp.classes.data.model.MenuModel
 import com.ita.myapp.classes.data.model.PostModel
+import com.ita.myapp.classes.ui.components.PostCard
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -884,7 +890,7 @@ fun AlertDialogs() {
 
 @Preview(showBackground = true)
 @Composable
-fun Bars() {
+private fun Bars() {
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -909,13 +915,22 @@ fun Bars() {
         }
 
         var post = arrayOf(
-            PostModel(1,"Title1","Text1"),
-            PostModel(2,"Title2","Text2"),
-            PostModel(3,"Title3","Text3"),
-            PostModel(4,"Title4","Text4"),
-            PostModel(5,"Title5","Text5")
+            PostModel(1,"Title1","Text1",painterResource(R.drawable.sushi)),
+            PostModel(2,"Title2","Text2",painterResource(R.drawable.sushi)),
+            PostModel(3,"Title3","Text3",painterResource(R.drawable.sushi)),
+            PostModel(4,"Title4","Text4",painterResource(R.drawable.sushi)),
+            PostModel(5,"Title5","Text5",painterResource(R.drawable.sushi)),
+            PostModel(6,"Title6","Text6",painterResource(R.drawable.sushi)),
+            PostModel(7,"Title7","Text7",painterResource(R.drawable.sushi)),
+            PostModel(8,"Title8","Text8",painterResource(R.drawable.sushi)),
+            PostModel(9,"Title9","Text9",painterResource(R.drawable.sushi)),
+            PostModel(10,"Title10","Text10",painterResource(R.drawable.sushi)),
         )
-        Posts(arrayPosts = post)
+        //Posts(arrayPosts = post)
+        PostGrid(arrayPosts = post)
+        
+        
+        //PostCard(1,"This is the card Title","This is the card Text",painterResource(R.drawable.sushi))
         /*Column( // Inside Content
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -994,7 +1009,8 @@ fun Bars() {
 
 @Composable
 fun Posts(arrayPosts : Array<PostModel>){
-    LazyColumn(
+    //LazyColumn(
+    LazyRow(
         /*modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)*/
@@ -1007,23 +1023,28 @@ fun Posts(arrayPosts : Array<PostModel>){
         items(arrayPosts){ // For each
             post ->
 
-            Text(
-                text = post.title,
-                color = Color.White,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = post.text,
-                color = Color.White,
-                fontSize = 16.sp,
-                //fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(thickness = 2.dp)
-
+            PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
         }
     }
 }
 
+@Composable
+fun PostGrid(arrayPosts : Array<PostModel>){
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        /*modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)*/
+        modifier = Modifier
+            //.align(Alignment.TopCenter)
+            .padding(10.dp, 90.dp, 10.dp, 50.dp) // Considering space of bars
+            .fillMaxSize()
+        //.verticalScroll(rememberScrollState()) // To scroll only the content
+    ){
+        items(arrayPosts){ // For each
+                post ->
+
+            PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
+        }
+    }
+}
