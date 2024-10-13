@@ -17,15 +17,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -72,6 +82,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -81,11 +92,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Switch
 import androidx.compose.ui.text.font.FontWeight
@@ -95,8 +108,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.ita.myapp.classes.R
+import com.ita.myapp.classes.data.model.MenuModel
 import com.ita.myapp.classes.data.model.PostModel
+import com.ita.myapp.classes.ui.components.PostCard
+import com.ita.myapp.classes.ui.components.PostCardCompact
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -108,7 +126,25 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Components(navController: NavController) {
-    var component by remember{ mutableStateOf("") } //Can assign a value
+    var menuOptions = arrayOf(
+        MenuModel(1,"Content 1","Content1",Icons.Filled.Home),
+        MenuModel(2,"Content 2","Content2",Icons.Filled.Person),
+        MenuModel(3,"Buttons","Buttons",Icons.Filled.Build),
+        MenuModel(4,"Floating Buttons","FloatingButtons",Icons.Filled.AddCircle),
+        MenuModel(5,"Chips","Chips",Icons.Filled.Info),
+        MenuModel(6,"Progress","Progress",Icons.Filled.Check),
+        MenuModel(7,"Sliders","Sliders",Icons.Filled.Favorite),
+        MenuModel(8,"Switches","Switches",Icons.Filled.Home),
+        MenuModel(9,"Badges","Badges",Icons.Filled.ShoppingCart),
+        MenuModel(10,"TimePickers","TimePickers",Icons.Filled.Notifications),
+        MenuModel(11,"DatePickers","DatePickers",Icons.Filled.DateRange),
+        MenuModel(12,"AlertDialogs","AlertDialogs",Icons.Filled.Warning),
+        MenuModel(13,"SnackBars","SnackBars",Icons.Filled.Settings),
+        MenuModel(14,"Bars","Bars",Icons.Filled.Person),
+        MenuModel(15,"Adaptive","Adaptive",Icons.Filled.Warning)
+    )
+    // In order to support horizontal page view change, remember Saveable
+    var component by rememberSaveable{ mutableStateOf("") } //Can assign a value
     // A reactive component to UI COMPONENTS
     // A global variable that its state can by updated using buttons
 
@@ -123,9 +159,26 @@ fun Components(navController: NavController) {
                     modifier = Modifier
                     .padding(16.dp))
                 HorizontalDivider() // Line
-
+                LazyColumn{
+                    items(menuOptions){
+                        item ->
+                        NavigationDrawerItem(
+                            icon = {Icon(item.icon, contentDescription = null)},
+                            label = { Text(item.title) },
+                            selected = false,
+                            onClick = {
+                                component=item.option
+                                scope.launch {
+                                    drawerState.apply {
+                                        close() // Close drawer or side menu
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
                 //Show content 1
-                NavigationDrawerItem(label = { Text("Content 1") }, //TITLE OF BUTTON //fist item
+                /*NavigationDrawerItem(label = { Text("Content 1") }, //TITLE OF BUTTON //fist item
                     selected = false //is selected?
                     , onClick = {
                         component="Content1"
@@ -147,10 +200,9 @@ fun Components(navController: NavController) {
                             }
                         }
                     }
-                )
-
+                )*/
                 //Buttons
-                NavigationDrawerItem(label = { Text("Buttons") }, //TITLE OF BUTTON //fist item
+                /*NavigationDrawerItem(label = { Text("Buttons") }, //TITLE OF BUTTON //fist item
                     selected = false //is selected?
                     , onClick = {
                         component="Buttons"
@@ -303,7 +355,7 @@ fun Components(navController: NavController) {
                             }
                         }
                     }
-                )
+                )*/
             }
 
          }) {
@@ -350,6 +402,9 @@ fun Components(navController: NavController) {
                 }
                 "Bars"->{
                     Bars()
+                }
+                "Adaptive"->{
+                    Adaptive()
                 }
 
 
@@ -843,7 +898,7 @@ fun AlertDialogs() {
 
 @Preview(showBackground = true)
 @Composable
-fun Bars() {
+private fun Bars() {
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -868,13 +923,22 @@ fun Bars() {
         }
 
         var post = arrayOf(
-            PostModel(1,"Title1","Text1"),
-            PostModel(2,"Title2","Text2"),
-            PostModel(3,"Title3","Text3"),
-            PostModel(4,"Title4","Text4"),
-            PostModel(5,"Title5","Text5")
+            PostModel(1,"Title1","Text1",painterResource(R.drawable.sushi)),
+            PostModel(2,"Title2","Text2",painterResource(R.drawable.sushi)),
+            PostModel(3,"Title3","Text3",painterResource(R.drawable.sushi)),
+            PostModel(4,"Title4","Text4",painterResource(R.drawable.sushi)),
+            PostModel(5,"Title5","Text5",painterResource(R.drawable.sushi)),
+            PostModel(6,"Title6","Text6",painterResource(R.drawable.sushi)),
+            PostModel(7,"Title7","Text7",painterResource(R.drawable.sushi)),
+            PostModel(8,"Title8","Text8",painterResource(R.drawable.sushi)),
+            PostModel(9,"Title9","Text9",painterResource(R.drawable.sushi)),
+            PostModel(10,"Title10","Text10",painterResource(R.drawable.sushi)),
         )
-        Posts(arrayPosts = post)
+        //Posts(arrayPosts = post)
+        PostGrid(arrayPosts = post)
+        
+        
+        //PostCard(1,"This is the card Title","This is the card Text",painterResource(R.drawable.sushi))
         /*Column( // Inside Content
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -952,8 +1016,9 @@ fun Bars() {
 }
 
 @Composable
-fun Posts(arrayPosts : Array<PostModel>){
+fun Posts(arrayPosts : Array<PostModel>,adaptive:String){
     LazyColumn(
+    //LazyRow(
         /*modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)*/
@@ -965,24 +1030,83 @@ fun Posts(arrayPosts : Array<PostModel>){
     ){
         items(arrayPosts){ // For each
             post ->
-
-            Text(
-                text = post.title,
-                color = Color.White,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = post.text,
-                color = Color.White,
-                fontSize = 16.sp,
-                //fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(thickness = 2.dp)
+            when(adaptive){
+                "PhoneP"->{
+                    PostCardCompact(id = post.id, title = post.title, text = post.text, image = post.image)
+                }
+                "PhoneL"->{
+                    PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
+                }
+            }
 
         }
     }
 }
 
+@Composable
+fun PostGrid(arrayPosts : Array<PostModel>){
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        /*modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)*/
+        modifier = Modifier
+            //.align(Alignment.TopCenter)
+            .padding(10.dp, 90.dp, 10.dp, 50.dp) // Considering space of bars
+            .fillMaxSize()
+        //.verticalScroll(rememberScrollState()) // To scroll only the content
+    ){
+        items(arrayPosts){ // For each
+                post ->
+
+            PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
+        }
+    }
+}
+
+@Preview(showBackground = true,device ="spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240")
+@Composable
+fun Adaptive(){
+    // Stores the dimensions of the actual screen
+    var WindowsSize = currentWindowAdaptiveInfo().windowSizeClass
+
+    //Sets variables with the height and width of the screen
+    var height = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+    var width = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+
+    /**
+     * Android handles 3 predifined dimensions
+     *
+     * COMPACT
+     * Compact width < 600dp Phone portrait
+     * Compact height < 480dp Phone landscape
+     *
+     * MEDIUM
+     * Medium width >= 600dp and width <840dp Tablets  portrait
+     * Medium height >=480dp and height < 900dp Tablets landscape or phone portrait
+     *
+     * EXPANDED
+     * Expanded width > 840dp Tablet landscape
+     * Expanded height > 900.dp Tablet in portrait
+     */
+    var post = arrayOf(
+        PostModel(1,"Title1","Text1",painterResource(R.drawable.sushi)),
+        PostModel(2,"Title2","Text2",painterResource(R.drawable.sushi)),
+        PostModel(3,"Title3","Text3",painterResource(R.drawable.sushi)),
+        PostModel(4,"Title4","Text4",painterResource(R.drawable.sushi)),
+        PostModel(5,"Title5","Text5",painterResource(R.drawable.sushi)),
+        PostModel(6,"Title6","Text6",painterResource(R.drawable.sushi)),
+        PostModel(7,"Title7","Text7",painterResource(R.drawable.sushi)),
+        PostModel(8,"Title8","Text8",painterResource(R.drawable.sushi)),
+        PostModel(9,"Title9","Text9",painterResource(R.drawable.sushi)),
+        PostModel(10,"Title10","Text10",painterResource(R.drawable.sushi)),
+    )
+    if(width == WindowWidthSizeClass.COMPACT){
+        Posts(post, "PhoneP") //PhoneP = Phone PORTRAIT
+    }else if(height == WindowHeightSizeClass.COMPACT){
+        Posts(post, "PhoneL") //PhoneP = Phone LANDSCAPE
+    }else{
+        Posts(post, "PhoneL")
+    }
+    //Text(text=WindowsSize.toString())
+}
