@@ -56,7 +56,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ita.myapp.classes.ui.screens.HomeScreen
 import com.ita.myapp.classes.ui.screens.HomeScreen
+
 import com.ita.myapp.classes.ui.screens.LoginScreen
+
+import com.ita.myapp.classes.ui.screens.Components
+
 import com.ita.myapp.classes.ui.screens.MenuScreen
 
 //import androidx.navigation.compose.NavHostController
@@ -64,7 +68,7 @@ import com.ita.myapp.classes.ui.screens.MenuScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Colors also baterry and stuff bar
         setContent { //Lo que se imprime en pantalla
             ComposeMultiScreenApp()
             /*Column(
@@ -369,15 +373,16 @@ fun BoxExample2(){
 fun ComposeMultiScreenApp(){
     val navController = rememberNavController()
     Surface(color=Color.White){
-        SetupNavGraph(navController=navController) //función propia
+        SetupNavGraph(navController=navController) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
     }
 }
 
 @Composable
 fun SetupNavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "login"){ //índice de pantallas
-        composable("menu"){ MenuScreen(navController) }
+    NavHost(navController = navController, startDestination = "login"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+        composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
+        composable("components"){ Components(navController)}
         composable("login"){ LoginScreen(navController = navController)}
     }
 

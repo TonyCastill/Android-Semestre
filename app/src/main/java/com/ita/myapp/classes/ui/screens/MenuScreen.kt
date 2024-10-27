@@ -7,10 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun MenuScreen(navController: NavController){
+fun MenuScreen(navController: NavController){ //Pantalla que se invoca
     Column(){
         Text(text="This is the Menu Screen")
         Button(onClick = { navController.navigate("home")}) {
+        }
+        Button(onClick = { navController.navigate("components")}) {
         }
     }
 }
