@@ -7,6 +7,7 @@ import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,17 +51,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import com.ita.myapp.classes.ui.theme.Myapp2Theme
 import kotlin.math.max
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.work.BackoffPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ita.myapp.classes.ui.background.CustomWorker
+import com.ita.myapp.classes.ui.location.viewModel.SearchViewModel
+import com.ita.myapp.classes.ui.location.views.HomeView
+import com.ita.myapp.classes.ui.location.views.MapsSearchView
 import com.ita.myapp.classes.ui.screens.HomeScreen
 import com.ita.myapp.classes.ui.screens.HomeScreen
 
@@ -95,9 +101,14 @@ class MainActivity : ComponentActivity() {
         //By adding this, message "Hello from worker!" should be seen from LogCat
 
         //--------------------------------------------
+        //-----------------------------------------
+        //Maps
+        //Instancia del ViewModel
+        val viewModel: SearchViewModel by viewModels()
 
+        //--------------------------------------------
         setContent { //Lo que se imprime en pantalla
-            ComposeMultiScreenApp()
+            ComposeMultiScreenApp(searchVM = viewModel)
             /*Column(
                 modifier= Modifier
                     .fillMaxSize() //De esa columna ocupa todo el espacio
@@ -397,20 +408,35 @@ fun BoxExample2(){
 }*/
 
 @Composable
-fun ComposeMultiScreenApp(){
+fun ComposeMultiScreenApp(searchVM: SearchViewModel){
     val navController = rememberNavController()
     Surface(color=Color.White){
-        SetupNavGraph(navController=navController) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
+        SetupNavGraph(navController=navController,searchVM) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
     }
 }
 
 @Composable
-fun SetupNavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "login"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel){
+    NavHost(navController = navController, startDestination = "homeMaps"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
         composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
         composable("components"){ Components(navController)}
         composable("login"){ LoginScreen(navController = navController)}
+
+        // Ruta para `MapsSearchView` que recibe latitud, longitud y dirección como argumentos
+        composable("homeMaps"){ HomeView(navController = navController, searchVM = searchVM)}
+        composable("MapsSearchView/{lat}/{long}/{address}", arguments = listOf(
+            navArgument("lat") { type = NavType.FloatType },
+            navArgument("long") { type = NavType.FloatType },
+            navArgument("address") { type = NavType.StringType }
+        )) {
+            // Obtención de los argumentos con valores predeterminados en caso de que falten
+            val lat = it.arguments?.getFloat("lat") ?: 0.0
+            val long = it.arguments?.getFloat("long") ?: 0.0
+            val address = it.arguments?.getString("address") ?: ""
+            MapsSearchView(lat.toDouble(), long.toDouble(), address )
+        }
+
     }
 
 }

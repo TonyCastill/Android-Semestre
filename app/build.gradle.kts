@@ -84,4 +84,15 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.44.2") // Fix typo in your compiler dependency
     implementation("androidx.hilt:hilt-work:1.2.0")
     //--------------------------------
+
+    // ------------------------------
+    //Location
+    //Mapas
+    implementation("com.google.maps.android:maps-compose:2.14.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //Places
+    implementation("com.google.android.libraries.places:places:4.0.0")
+    // ------------------------------
+
 }
