@@ -1,11 +1,13 @@
 package com.ita.myapp.classes
 
 import android.graphics.fonts.FontStyle
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,6 +56,11 @@ import kotlin.math.max
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.work.BackoffPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.ita.myapp.classes.ui.background.CustomWorker
 import com.ita.myapp.classes.ui.screens.HomeScreen
 import com.ita.myapp.classes.ui.screens.HomeScreen
 
@@ -62,13 +69,33 @@ import com.ita.myapp.classes.ui.screens.LoginScreen
 import com.ita.myapp.classes.ui.screens.Components
 
 import com.ita.myapp.classes.ui.screens.MenuScreen
+import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 //import androidx.navigation.compose.NavHostController
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() // Colors also baterry and stuff bar
+
+        //WorkManager
+        //------------------------------------------
+        val workRequest = OneTimeWorkRequestBuilder<CustomWorker>()
+            .setInitialDelay(Duration.ofSeconds(10))
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                duration = Duration.ofSeconds(15)
+            )
+            .build()
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+        //By adding this, message "Hello from worker!" should be seen from LogCat
+
+        //--------------------------------------------
+
         setContent { //Lo que se imprime en pantalla
             ComposeMultiScreenApp()
             /*Column(
