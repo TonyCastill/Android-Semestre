@@ -64,6 +64,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ita.myapp.classes.ui.background.CustomWorker
+import com.ita.myapp.classes.ui.contacts.ContactScreen
 import com.ita.myapp.classes.ui.location.viewModel.SearchViewModel
 import com.ita.myapp.classes.ui.location.views.HomeView
 import com.ita.myapp.classes.ui.location.views.MapsSearchView
@@ -417,11 +418,15 @@ fun ComposeMultiScreenApp(searchVM: SearchViewModel){
 
 @Composable
 fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel){
-    NavHost(navController = navController, startDestination = "homeMaps"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+    NavHost(navController = navController, startDestination = "contacts"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
         composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
         composable("components"){ Components(navController)}
         composable("login"){ LoginScreen(navController = navController)}
+
+        // Rutas de contactos
+
+        composable("contacts"){ ContactScreen(navController = navController) }
 
         // Ruta para `MapsSearchView` que recibe latitud, longitud y dirección como argumentos
         composable("homeMaps"){ HomeView(navController = navController, searchVM = searchVM)}
