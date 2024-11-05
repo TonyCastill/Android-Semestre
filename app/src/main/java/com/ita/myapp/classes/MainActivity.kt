@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -64,6 +65,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ita.myapp.classes.ui.background.CustomWorker
+import com.ita.myapp.classes.ui.biometrics.BiometricsScreen
 import com.ita.myapp.classes.ui.contacts.ContactScreen
 import com.ita.myapp.classes.ui.location.viewModel.SearchViewModel
 import com.ita.myapp.classes.ui.location.views.HomeView
@@ -83,7 +85,7 @@ import java.util.concurrent.TimeUnit
 //import androidx.navigation.compose.NavHostController
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +111,7 @@ class MainActivity : ComponentActivity() {
 
         //--------------------------------------------
         setContent { //Lo que se imprime en pantalla
-            ComposeMultiScreenApp(searchVM = viewModel)
+            ComposeMultiScreenApp(searchVM = viewModel,this)
             /*Column(
                 modifier= Modifier
                     .fillMaxSize() //De esa columna ocupa todo el espacio
@@ -409,16 +411,16 @@ fun BoxExample2(){
 }*/
 
 @Composable
-fun ComposeMultiScreenApp(searchVM: SearchViewModel){
+fun ComposeMultiScreenApp(searchVM: SearchViewModel, activity: AppCompatActivity){
     val navController = rememberNavController()
     Surface(color=Color.White){
-        SetupNavGraph(navController=navController,searchVM) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
+        SetupNavGraph(navController=navController,searchVM,activity) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
     }
 }
 
 @Composable
-fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel){
-    NavHost(navController = navController, startDestination = "contacts"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,activity: AppCompatActivity){
+    NavHost(navController = navController, startDestination = "biometrics"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
         composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
         composable("components"){ Components(navController)}
@@ -427,6 +429,9 @@ fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel){
         // Rutas de contactos
 
         composable("contacts"){ ContactScreen(navController = navController) }
+
+        //Biometricos
+        composable("biometrics"){ BiometricsScreen(navController = navController, activity = activity)}
 
         // Ruta para `MapsSearchView` que recibe latitud, longitud y dirección como argumentos
         composable("homeMaps"){ HomeView(navController = navController, searchVM = searchVM)}
