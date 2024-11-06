@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,6 +67,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ita.myapp.classes.ui.background.CustomWorker
 import com.ita.myapp.classes.ui.biometrics.BiometricsScreen
+import com.ita.myapp.classes.ui.camera.CameraScreen
 import com.ita.myapp.classes.ui.contacts.ContactScreen
 import com.ita.myapp.classes.ui.location.viewModel.SearchViewModel
 import com.ita.myapp.classes.ui.location.views.HomeView
@@ -420,11 +422,15 @@ fun ComposeMultiScreenApp(searchVM: SearchViewModel, activity: AppCompatActivity
 
 @Composable
 fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,activity: AppCompatActivity){
-    NavHost(navController = navController, startDestination = "biometrics"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+
+    val context = LocalContext.current
+    NavHost(navController = navController, startDestination = "Camera"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
         composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
         composable("components"){ Components(navController)}
         composable("login"){ LoginScreen(navController = navController)}
+
+        composable("Camera"){ CameraScreen(context = context)}
 
         // Rutas de contactos
 
