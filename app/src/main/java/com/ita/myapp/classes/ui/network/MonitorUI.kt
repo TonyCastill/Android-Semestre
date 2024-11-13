@@ -25,45 +25,40 @@ import coil.compose.rememberImagePainter
 
 
 @Composable
-fun NetworkIMage(isHighQuality:Boolean){
-    val imageUrl = if(isHighQuality){
-        //VER EN TEAMS
-        //Alta calidad
-        "https://st4.epo"
-    }else{
-        //Baja calidad
-        ""
+fun NetworkImage(isHighQuality: Boolean) {
+    val imageUrl = if (isHighQuality) {
+        // URL de la imagen de alta calidad
+        "https://st4.depositphotos.com/5906210/40964/i/450/depositphotos_409642058-stock-photo-smoky-sunset-santa-cruz-mountains.jpg"
+    } else {
+        // URL de la imagen de baja calidad
+        "https://st4.depositphotos.com/5906210/40964/i/150/depositphotos_409642058-stock-photo-smoky-sunset-santa-cruz-mountains.jpg"
     }
 
-    // CHECAR
-    /*Image(
+    // Mostramos la imagen con la URL determinada
+    Image(
         painter = rememberImagePainter(data = imageUrl),
-        contentDecription = "Imagen de Red",
+        contentDescription = "Imagen de Red",
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-    )*/
+    )
 }
 
 @Composable
-fun ConnectionCard(title: String, content:String, networkSpeed: Int? = null){
+fun ConnectionCard(title: String, content: String, networkSpeed: Int? = null) {
     Card(
-      modifier = Modifier
-          .fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ){
-
-        //TODO
-
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        ){
-            //Título de la tarjeta o estado de conexión
+        ) {
+            // Título de la tarjeta (generalmente el estado de la conexión)
             Text(
                 text = title,
                 fontSize = 24.sp,
@@ -71,26 +66,22 @@ fun ConnectionCard(title: String, content:String, networkSpeed: Int? = null){
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
-            // Contenido pricnopal de la tarjeta
+            // Contenido principal de la tarjeta (como el estado de la conexión o el uso de datos)
             Text(
                 text = content,
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
-
-            //Si la velodicda de la red es proporcionada, la mostramos
+            // Si la velocidad de la red es proporcionada, la mostramos
             networkSpeed?.let {
                 Text(
-                    text ="Velocidad de Red: $it kbps",
+                    text = "Velocidad de Red: $it kbps",
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center
                 )
             }
-
         }
-
     }
-
 }

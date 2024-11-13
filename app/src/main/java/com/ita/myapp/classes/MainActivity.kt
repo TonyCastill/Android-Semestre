@@ -1,6 +1,8 @@
 package com.ita.myapp.classes
 
 import android.graphics.fonts.FontStyle
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -72,6 +74,7 @@ import com.ita.myapp.classes.ui.contacts.ContactScreen
 import com.ita.myapp.classes.ui.location.viewModel.SearchViewModel
 import com.ita.myapp.classes.ui.location.views.HomeView
 import com.ita.myapp.classes.ui.location.views.MapsSearchView
+import com.ita.myapp.classes.ui.network.NetworkMonitor
 import com.ita.myapp.classes.ui.screens.HomeScreen
 import com.ita.myapp.classes.ui.screens.HomeScreen
 
@@ -86,8 +89,25 @@ import java.util.concurrent.TimeUnit
 
 //import androidx.navigation.compose.NavHostController
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    //--------------------------------------------
+    //Internet
+    // Inicializamos los objetos que vamos a usar para el monitoreo de la red
+    private lateinit var wifiManager: WifiManager  // Para gestionar el Wi-Fi
+    private lateinit var connectivityManager: ConnectivityManager  // Para gestionar las conexiones de red
+    private lateinit var networkMonitor: NetworkMonitor  // Clase que monitorea el estado de la red
+    //--------------------------------------------
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +126,25 @@ class MainActivity : AppCompatActivity() {
         //By adding this, message "Hello from worker!" should be seen from LogCat
 
         //--------------------------------------------
+
+
+        //-------------------------------------------
+        //Internet
+        // Obtenemos los servicios necesarios para controlar Wi-Fi y la conectividad de red
+        wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // Creamos una instancia de NetworkMonitor, pasando los servicios y la actividad actual
+        networkMonitor = NetworkMonitor(wifiManager, connectivityManager, this)
+
+
+
+
+        //---------------------------------------------
+
+
+
+
         //-----------------------------------------
         //Maps
         //Instancia del ViewModel
@@ -113,7 +152,7 @@ class MainActivity : AppCompatActivity() {
 
         //--------------------------------------------
         setContent { //Lo que se imprime en pantalla
-            ComposeMultiScreenApp(searchVM = viewModel,this)
+            ComposeMultiScreenApp(searchVM = viewModel,this,networkMonitor)
             /*Column(
                 modifier= Modifier
                     .fillMaxSize() //De esa columna ocupa todo el espacio
@@ -163,6 +202,37 @@ class MainActivity : AppCompatActivity() {
             }*/
         }
     }
+    //Internet
+// Función para solicitar permisos si no han sido concedidos
+    fun requestPermissionsIfNeeded() {
+        val permissions = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,  // Permiso para la ubicación precisa
+            Manifest.permission.ACCESS_COARSE_LOCATION  // Permiso para la ubicación aproximada
+        ).filter {
+            // Verificamos si alguno de los permisos no ha sido concedido
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        // Si falta algún permiso, solicitamos los permisos necesarios
+        if (permissions.isNotEmpty()) {
+            requestPermissionsLauncher.launch(permissions.toTypedArray())
+        }
+    }
+
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+        { permissions ->
+            // Verificamos si los permisos de ubicación fueron concedidos
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            ) {
+                // Si los permisos son concedidos, mostramos un mensaje
+                Toast.makeText(this, "Permisos necesarios concedidos", Toast.LENGTH_SHORT).show()
+            } else {
+                // Si no se conceden, mostramos un mensaje de error
+                Toast.makeText(this, "Permisos necesarios no concedidos", Toast.LENGTH_SHORT).show()
+            }
+        }
 }
 /*
 //Cada Composable es un elemento visible
@@ -413,24 +483,26 @@ fun BoxExample2(){
 }*/
 
 @Composable
-fun ComposeMultiScreenApp(searchVM: SearchViewModel, activity: AppCompatActivity){
+fun ComposeMultiScreenApp(searchVM: SearchViewModel, activity: AppCompatActivity,networkMonitor: NetworkMonitor){
     val navController = rememberNavController()
     Surface(color=Color.White){
-        SetupNavGraph(navController=navController,searchVM,activity) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
+        SetupNavGraph(navController=navController,searchVM,activity,networkMonitor) //función propia //crea el grafo recordando el navcontroller donde nos encontramos
     }
 }
 
 @Composable
-fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,activity: AppCompatActivity){
+fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,activity: AppCompatActivity,networkMonitor: NetworkMonitor){
 
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = "homeMaps"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+    NavHost(navController = navController, startDestination = "internet"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
         composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
         composable("components"){ Components(navController)}
         composable("login"){ LoginScreen(navController = navController)}
 
         composable("Camera"){ CameraScreen(context = context)}
+
+        composable("internet"){networkMonitor.NetworkMonitorScreen()}
 
         // Rutas de contactos
 
@@ -456,3 +528,5 @@ fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,act
     }
 
 }
+
+
