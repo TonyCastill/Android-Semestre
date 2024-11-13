@@ -424,7 +424,7 @@ fun ComposeMultiScreenApp(searchVM: SearchViewModel, activity: AppCompatActivity
 fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,activity: AppCompatActivity){
 
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = "Camera"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
+    NavHost(navController = navController, startDestination = "homeMaps"){ //índice de pantallas //Usa el nav controller de ahorita y empieza desde el índice definido
         composable("menu"){ MenuScreen(navController) } //Rutas
         composable("home"){ HomeScreen(navController) }
         composable("components"){ Components(navController)}
