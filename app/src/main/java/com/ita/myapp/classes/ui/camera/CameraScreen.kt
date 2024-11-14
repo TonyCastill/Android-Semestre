@@ -17,9 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.navigation.NavController
 
 @Composable
-fun CameraScreen(context: Context) {
+fun CameraScreen(context: Context,navController: NavController) {
     // Lista donde se guardan las URIs de las imágenes que se van agregando.
     val imageUris = remember { mutableStateListOf<Uri>() }
 
@@ -88,6 +90,20 @@ fun CameraScreen(context: Context) {
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
+
+
+                FloatingActionButton(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Go Back"
+                    )
+                }
+
                 FloatingActionButton(
                     onClick = {
                         requestPermissions(context, permissionLauncher) {
