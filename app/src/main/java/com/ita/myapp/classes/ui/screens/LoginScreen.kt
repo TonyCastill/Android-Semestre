@@ -70,11 +70,11 @@ fun LoginForm(navController: NavController){
                 .padding(20.dp)
         ){
             //Cargar recursos desde una URL
-            /*AsyncImage(
-                model  ="https://logoscarcas.net/wp-content/uploads/2020/12/GitHub-",
+            AsyncImage(
+                model  ="https://logodownload.org/wp-content/uploads/2019/08/github-logo.png",
                 contentDescription ="Github logo",
                 contentScale=ContentScale.Fit
-            )*/
+            )
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth(),

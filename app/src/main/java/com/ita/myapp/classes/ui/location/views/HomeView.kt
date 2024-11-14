@@ -3,7 +3,11 @@ package com.ita.myapp.classes.ui.location.views
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -38,6 +42,9 @@ fun HomeView(navController: NavController, searchVM: SearchViewModel){
             .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Button(onClick = {navController.popBackStack()}){
+                Icon(Icons.Filled.KeyboardArrowLeft,"Go Back")
+            }
             var search by remember { mutableStateOf("") }
             OutlinedTextField(
                 value = search,
