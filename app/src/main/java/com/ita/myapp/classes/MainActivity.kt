@@ -94,6 +94,7 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.ita.myapp.classes.ui.screens.ManageServiceScreen
 
 
 @AndroidEntryPoint
@@ -136,7 +137,6 @@ class MainActivity : AppCompatActivity() {
 
         // Creamos una instancia de NetworkMonitor, pasando los servicios y la actividad actual
         networkMonitor = NetworkMonitor(wifiManager, connectivityManager, this)
-
 
 
 
@@ -523,6 +523,12 @@ fun SetupNavGraph(navController: NavHostController,searchVM: SearchViewModel,act
             val long = it.arguments?.getFloat("long") ?: 0.0
             val address = it.arguments?.getString("address") ?: ""
             MapsSearchView(lat.toDouble(), long.toDouble(), address )
+        }
+
+        //ManageService
+        composable("manange-service/{serviceId}"){ backStrackEntry ->
+            val serviceId = backStrackEntry.arguments?.getString("serviceId")
+            ManageServiceScreen(navController = navController, serviceId = serviceId)
         }
 
     }

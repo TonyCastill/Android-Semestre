@@ -15,8 +15,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- -->
+    <!--usesCleartextTRaffic and networkSecurityConfig are used to implement API -->
     <application
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:name=".MyApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
